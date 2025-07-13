@@ -22,3 +22,17 @@ export const getTodoList = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+//mark/unmark todo as completed
+export const updateTodo = async (req, res) => {
+  const { id, completed } = req.body;
+
+  try {
+    const todoToUpdate = await todoModel.findById(id);
+    todoToUpdate.IsCompleted = completed;
+    const updatedRecord = await todoToUpdate.save();
+    res.status(200).json(updatedRecord);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

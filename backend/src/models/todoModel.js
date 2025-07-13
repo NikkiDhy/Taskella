@@ -6,13 +6,17 @@ const todoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  MarkAsCompleted: {
+  IsCompleted: {
     type: Boolean,
     default: false,
   },
   CreatedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  Deadline: {
+    type: Date,
+    default: Date.now,
   },
 });
 

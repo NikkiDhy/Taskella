@@ -1,6 +1,10 @@
 import express from "express";
 import Todo from "../models/todoModel.js";
-import { addTodo, getTodoList } from "../controllers/todoContoller.js";
+import {
+  addTodo,
+  getTodoList,
+  updateTodo,
+} from "../controllers/todoContoller.js";
 
 const router = express.Router();
 
@@ -21,5 +25,6 @@ const router = express.Router();
 //addTodo() => imediately executes the function
 router.route("/add").post(addTodo);
 router.route("/getAll").get(getTodoList);
+router.route("/update").post(updateTodo);
 
 export default router;
