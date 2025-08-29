@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+@theme {
+  --color-welcomeBg: #EAE4D5;
+  --color-beigeDark : #B6B09F;
+  --color-beigeLight : #F2F2F2;
+  --color-todoBlack: #000000;
+  --font-todoFont: "General Sans", sans-serif;
+
+}

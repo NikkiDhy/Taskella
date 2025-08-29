@@ -4,6 +4,7 @@
 
 import express from "express";
 import todoRoutes from "./routes/todoRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import cors from "cors";
 
 const app = express();
@@ -23,5 +24,6 @@ app.use(cors());
 
 //if request url is pi/v1/todo => then go to todoRoutes page
 app.use("/api/v1/todo", todoRoutes);
+app.use("/api/v1/user", userRoutes);
 
 export default app;

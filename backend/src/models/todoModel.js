@@ -14,7 +14,7 @@ const todoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
   },
-  Deadline: {
+  CreatedDate: {
     type: Date,
     default: Date.now,
   },
