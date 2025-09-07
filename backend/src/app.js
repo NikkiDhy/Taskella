@@ -6,7 +6,12 @@ import express from "express";
 import todoRoutes from "./routes/todoRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import cors from "cors";
+import { fileURLToPath } from "url"; // ADD THIS
+import path from "path"; // ADD THIS
+// import dotenv from "dotenv"; // ADD THIS
+// import connectDB from "./db/index.js"; // ADD THIS
 
+// dotenv.config(); // ADD THIS
 const app = express();
 
 //const port = process.env.PORT || 4000;
