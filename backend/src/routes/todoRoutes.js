@@ -6,6 +6,7 @@ import {
   getTodoList,
   updateTodo,
 } from "../controllers/todoContoller.js";
+import { verifyToken } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 
@@ -24,9 +25,9 @@ const router = express.Router();
 
 //addTodo => fn reference
 //addTodo() => imediately executes the function
-router.route("/add").post(addTodo);
-router.route("/getAll").get(getTodoList);
-router.route("/update").post(updateTodo);
-router.route("/delete").post(deleteTodo);
+router.route("/add").post(verifyToken, addTodo);
+router.route("/getAll").get(verifyToken, getTodoList);
+router.route("/update").post(verifyToken, updateTodo);
+router.route("/delete").post(verifyToken, deleteTodo);
 
 export default router;

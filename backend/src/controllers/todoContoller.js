@@ -4,7 +4,7 @@ import todoModel from "../models/todoModel.js";
 export const addTodo = async (req, res) => {
   try {
     const { title } = req.body;
-    const newTodo = new todoModel({ title });
+    const newTodo = new todoModel({ title, CreatedBy: req.user.userId });
 
     await newTodo.save();
     res.status(200).json({ message: "To-Do added successfully", newTodo });
@@ -25,7 +25,9 @@ export const getTodoList = async (req, res) => {
     // const todoList = await todoModel.find({
     //   createdAt: { $gte: startOfDay, $lte: endOfDay },
     // });
-    const todoList = await todoModel.find().sort({ createdAt: -1 });
+    const todoList = await todoModel
+      .find({ CreatedBy: req.user.userId })
+      .sort({ createdAt: -1 });
     res.json(todoList);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -38,6 +40,15 @@ export const updateTodo = async (req, res) => {
 
   try {
     const todoToUpdate = await todoModel.findById(id);
+    if (!todoToUpdate)
+      return res.status(404).json({ message: "Todo not found" });
+
+    if (todoToUpdate.CreatedBy.toString() !== req.user.userId) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to update this todo" });
+    }
+
     todoToUpdate.IsCompleted = completed;
     const updatedRecord = await todoToUpdate.save();
     res.status(200).json(updatedRecord);
@@ -49,11 +60,18 @@ export const updateTodo = async (req, res) => {
 export const deleteTodo = async (req, res) => {
   try {
     const id = req.body.id;
-    const deletedTodo = await todoModel.findByIdAndDelete(id);
-    if (!deletedTodo) {
+    const todoToDelete = await todoModel.findById(id);
+    if (!todoToDelete) {
       return res.status(404).json({ message: "Todo not found" });
     }
 
+    if (todoToDelete.CreatedBy.toString() !== req.user.userId) {
+      return res
+        .status(403)
+        .json({ message: "You are not authorized to delete this todo" });
+    }
+
+    await todoToDelete.deleteOne();
     res.status(200).json({ message: "Todo deleted successfully" });
     // console.log("todo to delete :", deletedTodo);
   } catch (error) {

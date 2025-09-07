@@ -1,13 +1,26 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import loginImg from "./assets/loginImg.png";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import logo from "./assets/MomentumLogo.jpg";
 
 function Login() {
+  // const location = useLocation();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
+
+  // useEffect(() => {
+  //   if (location.state) {
+  //     setFormData({
+  //       username: location.state.username || "",
+  //       password: location.state.password || "",
+  //     });
+  //   }
+  // }, [location.state]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const handleInputChange = (e) => {
@@ -30,15 +43,29 @@ function Login() {
 
     // Simulate login process - replace with your actual login logic
     try {
-      // Your login API call would go here
-      // const response = await loginAPI(formData);
+      const response = await fetch("http://localhost:3000/api/v1/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Username: formData.username,
+          Password: formData.password,
+        }),
+      });
 
-      setTimeout(() => {
+      const data = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("loggedInUserId", data.user._id);
+        navigate("/Todo");
+      } else {
+        alert(data.message || "Login failed.");
         setIsLoading(false);
-        console.log("Login attempt:", formData);
-        alert("Login successful!");
-        // Handle successful login (e.g., redirect, update auth state, etc.)
-      }, 2000);
+        return;
+      }
+      setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.error("Login error:", error);
@@ -54,24 +81,24 @@ function Login() {
 
   return (
     <div
-      className="flex min-h-screen overflow-hidden"
+      className="flex flex-col min-h-screen overflow-hidden lg:flex-row bg-welcomeBg"
       style={{ fontFamily: "Poppins, sans-serif" }}
     >
-      {/* Login Section */}
-      <div className="flex flex-col items-center justify-center w-2/5 px-10 py-16 bg-todoBlack">
-        <div className="flex flex-col w-full max-w-sm gap-10">
+      {/* Login Section - Mobile first, then desktop positioning */}
+      <div className="flex flex-col items-center justify-center w-full lg:w-2/5 px-6 sm:px-8 lg:px-10 py-8 sm:py-12 lg:py-16 bg-todoBlack order-2 lg:order-1 min-h-[60vh] lg:min-h-screen">
+        <div className="flex flex-col w-full max-w-sm gap-6 sm:gap-8 lg:gap-10">
           {/* Login Header */}
           <div className="text-center">
-            <h1 className="mb-2 text-4xl font-todoFont text-beigeLight">
+            <h1 className="mb-2 text-2xl sm:text-3xl lg:text-4xl font-todoFont text-beigeLight">
               Login
             </h1>
-            <p className="text-sm text-beigeLight font-todoFont font-extralight">
+            <p className="text-xs sm:text-sm text-beigeLight font-todoFont font-extralight">
               Welcome back! Please enter your details.
             </p>
           </div>
 
           {/* Login Form */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-4 sm:gap-5 lg:gap-6">
             {/* Username Field */}
             <div className="form-group">
               <input
@@ -115,16 +142,16 @@ function Login() {
             </div>
 
             {/* Login Actions */}
-            <div className="flex flex-col gap-5 mt-8">
+            <div className="flex flex-col gap-4 mt-4 sm:gap-5 sm:mt-6 lg:mt-8">
               <button
                 onClick={handleSubmit}
-                className="w-full px-6 py-4 transition-all duration-300 border cursor-pointer text-beigeDark font-todoFont login-btn rounded-4xl"
+                className="w-full px-4 py-3 text-sm transition-all duration-300 border cursor-pointer sm:px-6 sm:py-4 sm:text-base text-beigeDark font-todoFont login-btn rounded-4xl"
                 disabled={isLoading}
               >
                 {isLoading ? "Logging in..." : "Login"}
               </button>
 
-              <div className="text-sm font-light text-center text-beigeLight font-todoFont">
+              <div className="text-xs font-light text-center sm:text-sm text-beigeLight font-todoFont">
                 Don't have an account?{" "}
                 <Link
                   className="font-semibold cursor-pointer text-beigeLight hover:underline"
@@ -137,17 +164,23 @@ function Login() {
           </div>
         </div>
       </div>
-      <div className="relative flex items-center justify-center w-3/5 overflow-hidden bg-welcomeBg">
+
+      {/* Image Section - Responsive positioning */}
+      <div className="relative flex items-center justify-center order-1 w-full h-40 overflow-hidden lg:w-3/5 sm:h-48 md:h-60 lg:h-screen bg-welcomeBg lg:order-2">
         <img
           src={logo}
           alt="Logo"
-          className="absolute top-0 w-auto h-20 right-4"
+          className="absolute w-auto h-12 top-2 sm:top-4 lg:top-0 right-2 sm:right-4 sm:h-16 lg:h-20"
         />
-        <img className="w-auto h-160" src={loginImg} />
+        <img
+          className="object-contain w-auto h-24 sm:h-32 md:h-40 lg:h-160"
+          src={loginImg}
+          alt="Login illustration"
+        />
       </div>
 
       {/* Styles */}
-      <style jsx>{`
+      <style>{`
         @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap");
 
         .form-group {
@@ -163,7 +196,7 @@ function Login() {
           border: 0;
           border-bottom: 1px solid var(--color-beigeLight);
           outline: 0;
-          font-size: 1.3rem;
+          font-size: 18px;
           color: var(--color-beigeLight);
           padding: 7px 0;
           background: transparent;
@@ -175,9 +208,9 @@ function Login() {
         }
 
         .form-field:placeholder-shown ~ .form-label {
-          font-size: 16px;
+          font-size: 14px;
           cursor: text;
-          top: 30px;
+          top: 25px;
         }
 
         .form-label {
@@ -185,8 +218,8 @@ function Login() {
           top: 0;
           display: block;
           transition: 0.2s;
-          font-size: 10px;
-          color:  var(--color-beigeLight);
+          font-size: 12px;
+          color: var(--color-beigeLight);
           cursor: text;
         }
 
@@ -196,9 +229,9 @@ function Login() {
           top: 0;
           display: block;
           transition: 0.2s;
-          font-size: 1rem;
+          font-size: 12px;
           color: var(--color-beigeLight);
-          font-light
+          font-weight: 300;
         }
 
         .form-field:focus {
@@ -217,8 +250,8 @@ function Login() {
         .login-btn:hover:not(:disabled) {
           transform: translateY(-2px);
           background-color: var(--color-beigeLight);
-         color: var(--color-todoBlack);
-         }
+          color: var(--color-todoBlack);
+        }
 
         .login-btn:disabled {
           opacity: 0.7;
@@ -226,29 +259,42 @@ function Login() {
           transform: none;
         }
 
+        /* Responsive adjustments for form fields */
         @media (max-width: 1024px) {
-          .w-3\\/4 {
-            width: 70%;
+          .form-field {
+            font-size: 16px;
           }
-          .w-1\\/4 {
-            width: 30%;
+          .form-field:placeholder-shown ~ .form-label {
+            font-size: 13px;
+            top: 23px;
           }
         }
 
         @media (max-width: 768px) {
-          .min-h-screen {
-            flex-direction: column;
+          .form-field {
+            font-size: 16px;
+            padding: 6px 0;
           }
-          .w-3\\/4,
-          .w-1\\/4 {
-            width: 100%;
+          .form-field:placeholder-shown ~ .form-label {
+            font-size: 12px;
+            top: 20px;
           }
-          .w-3\\/4 {
-            height: 60vh;
+          .form-label {
+            font-size: 11px;
           }
-          .w-1\\/4 {
-            height: 40vh;
-            padding: 30px 20px;
+          .form-field:focus ~ .form-label,
+          .form-field:not(:placeholder-shown) ~ .form-label {
+            font-size: 11px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .form-field {
+            font-size: 14px;
+          }
+          .form-field:placeholder-shown ~ .form-label {
+            font-size: 11px;
+            top: 18px;
           }
         }
       `}</style>
