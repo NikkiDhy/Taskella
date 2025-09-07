@@ -18,7 +18,8 @@ function TodoPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/api/v1/todo/update", {
+      // const response = await fetch("http://localhost:3000/api/v1/todo/update", {
+      const response = await fetch("/api/v1/todo/update", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -46,7 +47,8 @@ function TodoPage() {
   const fetchTodos = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:3000/api/v1/todo/getAll", {
+      // const response = await fetch("http://localhost:3000/api/v1/todo/getAll", {
+      const response = await fetch("/api/v1/todo/getAll", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -77,7 +79,8 @@ function TodoPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/api/v1/todo/add", {
+      // const response = await fetch("http://localhost:3000/api/v1/todo/add", {
+      const response = await fetch("/api/v1/todo/add", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -106,7 +109,8 @@ function TodoPage() {
     try {
       const token = localStorage.getItem("token");
 
-      const response = await fetch("http://localhost:3000/api/v1/todo/delete", {
+      // const response = await fetch("http://localhost:3000/api/v1/todo/delete", {
+      const response = await fetch("/api/v1/todo/delete", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

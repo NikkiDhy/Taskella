@@ -43,7 +43,8 @@ function Login() {
 
     // Simulate login process - replace with your actual login logic
     try {
-      const response = await fetch("http://localhost:3000/api/v1/user/login", {
+      // const response = await fetch("http://localhost:3000/api/v1/user/login", {
+      const response = await fetch("/api/v1/user/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

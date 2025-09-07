@@ -31,7 +31,8 @@ function Register() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/v1/user/add", {
+      // const response = await fetch("http://localhost:3000/api/v1/user/add", {
+      const response = await fetch("/api/v1/user/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -328,7 +329,8 @@ function Register() {
           .form-field {
             font-size: 14px;
           }
-          .form-field:placeholder-shown ~ .form-label {
+          .form-field:placeholder-shown ~ .fo
+          rm-label {
             font-size: 11px;
             top: 18px;
           }
