@@ -25,7 +25,11 @@ const app = express();
 // });
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "https://momentume.netlify.app",
+  }),
+);
 
 //if request url is pi/v1/todo => then go to todoRoutes page
 app.use("/api/v1/todo", todoRoutes);
