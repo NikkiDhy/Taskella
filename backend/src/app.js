@@ -6,8 +6,8 @@ import express from "express";
 import todoRoutes from "./routes/todoRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import cors from "cors";
-import { fileURLToPath } from "url"; // ADD THIS
-import path from "path"; // ADD THIS
+// import { fileURLToPath } from "url"; // ADD THIS
+// import path from "path"; // ADD THIS
 // import dotenv from "dotenv"; // ADD THIS
 // import connectDB from "./db/index.js"; // ADD THIS
 
@@ -31,15 +31,15 @@ app.use(cors());
 app.use("/api/v1/todo", todoRoutes);
 app.use("/api/v1/user", userRoutes);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../frontend/dist")));
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
-  });
-}
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
+//   });
+// }
 
 export default app;
