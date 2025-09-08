@@ -17,9 +17,9 @@ function TodoPage() {
   const handleMarkCompleted = async (id, completed) => {
     try {
       const token = localStorage.getItem("token");
-
+      const API_BASE_URL = import.meta.env.API_URL;
       // const response = await fetch("http://localhost:3000/api/v1/todo/update", {
-      const response = await fetch("/api/v1/todo/update", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/todo/update`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -47,8 +47,9 @@ function TodoPage() {
   const fetchTodos = async () => {
     try {
       const token = localStorage.getItem("token");
+      const API_BASE_URL = import.meta.env.API_URL;
       // const response = await fetch("http://localhost:3000/api/v1/todo/getAll", {
-      const response = await fetch("/api/v1/todo/getAll", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/todo/getAll`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -80,7 +81,7 @@ function TodoPage() {
       const token = localStorage.getItem("token");
 
       // const response = await fetch("http://localhost:3000/api/v1/todo/add", {
-      const response = await fetch("/api/v1/todo/add", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/todo/add`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -108,9 +109,9 @@ function TodoPage() {
   const handleDeleteClick = async (id) => {
     try {
       const token = localStorage.getItem("token");
-
+      const API_BASE_URL = import.meta.env.API_URL;
       // const response = await fetch("http://localhost:3000/api/v1/todo/delete", {
-      const response = await fetch("/api/v1/todo/delete", {
+      const response = await fetch(`${API_BASE_URL}/api/v1/todo/delete`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
