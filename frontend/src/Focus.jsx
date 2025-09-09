@@ -3,6 +3,8 @@ import focusBg from "./assets/focusBg.png";
 import { FaTasks } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import logo from "./assets/MomentumLogo.jpg";
+import confetti from "canvas-confetti"; // install with npm i canvas-confetti
+import popSound from "./assets/pop.mp3"; // add your pop sound in assets
 
 export default function Focus() {
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
@@ -11,6 +13,7 @@ export default function Focus() {
   const [isEditing, setIsEditing] = useState(false);
   const [editMinutes, setEditMinutes] = useState(25);
   const [editSeconds, setEditSeconds] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
   const intervalRef = useRef(null);
   const navigate = useNavigate();
 
@@ -19,7 +22,10 @@ export default function Focus() {
       intervalRef.current = setInterval(() => {
         setTimeLeft((prevTime) => {
           if (prevTime <= 1) {
+            clearInterval(intervalRef.current);
             setIsRunning(false);
+            setIsCompleted(true);
+            triggerCelebration();
             return 0;
           }
           return prevTime - 1;
@@ -31,6 +37,19 @@ export default function Focus() {
 
     return () => clearInterval(intervalRef.current);
   }, [isRunning, timeLeft]);
+
+  const triggerCelebration = () => {
+    // play sound
+    const audio = new Audio(popSound);
+    audio.play();
+
+    // burst confetti
+    confetti({
+      particleCount: 150,
+      spread: 100,
+      origin: { y: 0.6 },
+    });
+  };
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -55,6 +74,7 @@ export default function Focus() {
     setTimeLeft(newTime);
     setInitialTime(newTime);
     setIsEditing(false);
+    setIsCompleted(false);
   };
 
   const handleCancelEdit = () => {
@@ -70,6 +90,7 @@ export default function Focus() {
   const handleReset = () => {
     setIsRunning(false);
     setTimeLeft(initialTime);
+    setIsCompleted(false);
   };
 
   const handleKeyPress = (e) => {
@@ -82,34 +103,35 @@ export default function Focus() {
 
   const currentTime = formatTime(timeLeft);
 
-  // Calculate progress (0 to 1, where 1 is complete)
   const progress = initialTime > 0 ? (initialTime - timeLeft) / initialTime : 0;
 
-  // Circle properties
   const radius = 140;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference * (1 - progress);
 
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen p-8 font-todoFont bg-welcomeBg">
+      {/* Navigation to Todo */}
       <div
         onClick={() => navigate("/Todo")}
-        className="absolute flex items-center justify-center w-8 h-8 border rounded-md cursor-pointer group top-2 right-4 sm:top-4 sm:right-4 lg:top-12 lg:right-20 hover:bg-todoBlack border-todoBlack"
+        className="absolute z-50 flex items-center justify-center w-8 h-8 border rounded-md cursor-pointer group top-2 right-4 sm:top-4 sm:right-4 lg:top-12 lg:right-20 hover:bg-todoBlack border-todoBlack"
       >
         <FaTasks className="text-xl transition text-todoBlack group-hover:text-white" />
         <span className="absolute hidden px-2 py-1 font-mono text-xs -translate-x-1/2 text-todoBlack -bottom-8 left-1/2 whitespace-nowrap group-hover:block">
           Tasks mode
         </span>
       </div>
+
+      {/* Logo */}
       <img
         src={logo}
         alt="Logo"
         className="absolute w-auto h-12 top-2 sm:top-4 lg:top-0 left-2 sm:left-4 sm:h-16 md:h-20 lg:h-25"
       />
-      {/* Circular Image Section */}
-      <div className="relative mb-12">
+
+      {/* Circular Timer */}
+      <div className="relative mb-12 pointer-events-none">
         <svg width="350" height="350" className="transform -rotate-90">
-          {/* Background circle */}
           <circle
             cx="175"
             cy="175"
@@ -117,7 +139,6 @@ export default function Focus() {
             className="stroke-current text-todoBlack fill-welcomeBg"
             strokeWidth="0.5"
           />
-          {/* Progress circle */}
           <circle
             cx="175"
             cy="175"
@@ -133,26 +154,13 @@ export default function Focus() {
           />
         </svg>
 
-        {/* Image inside circle */}
         <div className="absolute inset-0 flex items-center justify-center">
-          {/* <div className="flex items-center justify-center w-32 h-32 rounded-full shadow-lg bg-gradient-to-br from-blue-400 to-purple-500"> */}
-          {/* <svg
-              className="w-16 h-16 text-white"
-              fill="currentColor"
-              viewBox="0 0 20 20"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
-                clipRule="evenodd"
-              />
-            </svg> */}
-          {/* </div> */}
-          <img className="h-auto w-60" src={focusBg} />
+          <img className="h-auto pointer-events-none w-60" src={focusBg} />
         </div>
       </div>
-      {/* Editable Timer Display */}
-      <div className="mb-8">
+
+      {/* Timer Display */}
+      <div className="mb-8 pointer-events-auto">
         {isEditing ? (
           <div className="flex items-center px-8 py-6 space-x-2 bg-transparent border rounded-lg shadow-lg">
             <input
@@ -213,14 +221,22 @@ export default function Focus() {
           </div>
         )}
       </div>
+
       {/* Control Buttons */}
       {!isEditing && (
-        <div className="flex space-x-4">
-          {!isRunning ? (
+        <div className="flex space-x-4 pointer-events-auto">
+          {isCompleted ? (
+            <button
+              onClick={handleReset}
+              className="py-2 text-sm font-medium transition-colors bg-transparent cursor-pointer border-1 text-todoBlack px-7 focus:outline-none focus:ring-1 focus:ring-beigeLight"
+            >
+              Reset
+            </button>
+          ) : !isRunning ? (
             <button
               onClick={handleStart}
               disabled={timeLeft === 0}
-              className="py-2 text-sm font-medium transition-colors bg-transparent cursor-pointer px-7 border-1 text-todoBlack focus:outline-none focus:ring-1 focus:ring-beigeLight disabled:bg-gray-400 disabled:cursor-not-allowed"
+              className="py-2 text-sm font-medium transition-colors bg-transparent cursor-pointer px-7 border-1 text-todoBlack focus:outline-none focus:ring-1 focus:ring-beigeLight disabled:bg-gray-400 disabled:cursor-not-allowed hover:bg-todoBlack hover:text-beigeLight"
             >
               Start
             </button>
