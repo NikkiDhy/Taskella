@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import focusBg from "./assets/focusBg.png";
+import { FaTasks } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import logo from "./assets/MomentumLogo.jpg";
 
 export default function Focus() {
   const [timeLeft, setTimeLeft] = useState(25 * 60); // 25 minutes in seconds
@@ -9,6 +12,7 @@ export default function Focus() {
   const [editMinutes, setEditMinutes] = useState(25);
   const [editSeconds, setEditSeconds] = useState(0);
   const intervalRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
@@ -88,6 +92,20 @@ export default function Focus() {
 
   return (
     <div className="flex flex-col items-center justify-center w-full min-h-screen p-8 font-todoFont bg-welcomeBg">
+      <div
+        onClick={() => navigate("/Todo")}
+        className="absolute flex items-center justify-center w-8 h-8 border rounded-md cursor-pointer group top-2 right-4 sm:top-4 sm:right-4 lg:top-12 lg:right-20 hover:bg-todoBlack border-todoBlack"
+      >
+        <FaTasks className="text-xl transition text-todoBlack group-hover:text-white" />
+        <span className="absolute hidden px-2 py-1 font-mono text-xs -translate-x-1/2 text-todoBlack -bottom-8 left-1/2 whitespace-nowrap group-hover:block">
+          Tasks mode
+        </span>
+      </div>
+      <img
+        src={logo}
+        alt="Logo"
+        className="absolute w-auto h-12 top-2 sm:top-4 lg:top-0 left-2 sm:left-4 sm:h-16 md:h-20 lg:h-25"
+      />
       {/* Circular Image Section */}
       <div className="relative mb-12">
         <svg width="350" height="350" className="transform -rotate-90">

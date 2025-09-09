@@ -3,6 +3,7 @@ import { MdDeleteOutline } from "react-icons/md";
 import { SlCalender } from "react-icons/sl";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { RxTimer } from "react-icons/rx";
 import bg from "./assets/todoImg.png";
 import logo from "./assets/MomentumLogo.jpg";
 import { useNavigate } from "react-router-dom";
@@ -143,6 +144,17 @@ function TodoPage() {
 
   return (
     <div className="flex flex-col items-center h-screen overflow-hidden lg:flex-row lg:items-center bg-welcomeBg">
+      {/* Top-right timer icon */}
+      <div
+        onClick={() => navigate("/Focus")}
+        className="absolute flex items-center justify-center w-8 h-8 border rounded-md cursor-pointer group top-2 right-4 sm:top-4 sm:right-4 lg:top-12 lg:right-20 hover:bg-todoBlack border-todoBlack"
+      >
+        <RxTimer className="text-xl transition text-todoBlack group-hover:text-white" />
+        <span className="absolute hidden px-2 py-1 font-mono text-xs -translate-x-1/2 text-todoBlack -bottom-8 left-1/2 whitespace-nowrap group-hover:block">
+          Focus mode
+        </span>
+      </div>
+
       {/* Left side - Image section with responsive layout */}
       <div className="relative flex items-center justify-center w-full h-40 lg:w-2/3 sm:h-48 md:h-60 lg:h-full">
         <img
@@ -163,7 +175,6 @@ function TodoPage() {
         <h1 className="mb-4 text-xl font-medium text-center sm:text-2xl lg:hidden text-todoBlack font-todoFont">
           To-Do List
         </h1>
-
         {/* Input section with responsive sizing */}
         <div className="flex items-center flex-shrink-0 space-x-2">
           <input

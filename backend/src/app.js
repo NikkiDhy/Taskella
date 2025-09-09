@@ -28,6 +28,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "https://momentume.netlify.app",
+    // origin: "http://localhost:5173",
   }),
 );
 
